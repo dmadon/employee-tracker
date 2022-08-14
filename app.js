@@ -37,7 +37,10 @@ const start = () => {
                 // INSERT FUNCTION TO INSERT A NEW RECORD INTO roles TABLE;
                 break;
             case 'Add an Employee':
-                addEmployee();
+                addEmployee()
+                .then(() => {start()}) 
+                    
+                
                 break;
             case 'Update an Employee Role':
                 // INSERT FUNCTION TO UPDATE employees TABLE WITH A NEW ROLE VALUE;

@@ -103,19 +103,17 @@ const addEmployee = () => {
            
         ])
         .then((answers) => {
-            console.log(answers);
             db.query("INSERT INTO employees SET ?",
                 {
                 emp_first_name: answers.firstName,
                 emp_last_name: answers.lastName,
                 emp_role_id: answers.empRoleId,
                 emp_manager_id: answers.empManagerId
-                },  
-                function(error){
-                if(error) throw error;
+                }) 
+                
                 console.log('Employee added!');
-                getEmployees(); 
-                })
+                // getEmployees(); 
+                
                 
             }) 
         

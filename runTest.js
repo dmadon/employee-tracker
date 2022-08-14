@@ -38,12 +38,9 @@ const testPromise = () => {
                 reject(err);
                 return;
             }
-            resolve({
-                ok: true,
-                message: 'Rows retrieved!',
-                data: rows
-            })
-            ;
+            resolve(
+                console.table(rows)
+            );
         });
 
     })
@@ -52,9 +49,7 @@ const testPromise = () => {
 
 
 testPromise()
-.then((response) => {
-    console.table(response.data);
-})
+
 .then(() => {
     console.log('did it work?')
 })

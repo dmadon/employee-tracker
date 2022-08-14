@@ -27,8 +27,8 @@ const start = () => {
                 // INSERT FUNCTION TO QUERY FOR ALL ROLES;
                 break;
             case 'View All Employees':
-                getEmployees();
-                // start();
+                getEmployees()
+                .then(() => {start()});
                 break;
             case 'Add a Department':
                 // INSERT FUNCTION TO INSERT A NEW RECORD INTO departments TABLE;

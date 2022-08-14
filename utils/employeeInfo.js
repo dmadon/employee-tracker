@@ -4,6 +4,9 @@ const inquirer = require('inquirer');
 
 
 const getEmployees = () => {
+
+    return new Promise((resolve,reject) => {
+
     console.table(`
 -----------------------------------------------------------------------------------------
                                        ALL EMPLOYEES
@@ -28,16 +31,21 @@ const getEmployees = () => {
     LEFT JOIN employees M
     ON M.emp_id = E.emp_manager_id
 
-    ORDER BY E.emp_last_name ASC`
+    ORDER BY E.emp_last_name ASC`;
+
     db.query(sql,(err,rows) => {
         if(err){
-            console.log(err);
+            reject(err);
             return;
         }
-        console.table(rows);
+        resolve(
+            console.table(rows)
+        );
     });
+
+})
   
-    }
+}
 
 
 const addEmployee = () => {

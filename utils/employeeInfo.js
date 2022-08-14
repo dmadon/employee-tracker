@@ -1,11 +1,14 @@
-const express = require('express');
-const app = express();
 const db = require('../db/connection');
 const cTable = require('console.table');
 const inquirer = require('inquirer');
 
+
 const getEmployees = () => {
-    const sql = `SELECT * FROM employees`
+    console.table(`
+    ---------------------------------
+               ALL EMPLOYEES
+    ---------------------------------`);
+    const sql = `SELECT * FROM employees ORDER BY emp_last_name ASC`
     db.query(sql,(err,rows) => {
         if(err){
             console.log(err);
@@ -13,6 +16,7 @@ const getEmployees = () => {
         }
         console.table(rows);
     });
+  
     }
 
 
@@ -71,13 +75,13 @@ const addEmployee = () => {
            
         ])
         .then((answers) => {
-            console.table(answers);
+            console.log(answers);
             db.query("INSERT INTO employees SET ?",
                 {
                 emp_first_name: answers.firstName,
                 emp_last_name: answers.lastName,
                 emp_role_id: answers.empRoleId,
-                emp_manager_id: answers.emp_manager_id
+                emp_manager_id: answers.empManagerId
                 },  
                 function(error){
                 if(error) throw error;

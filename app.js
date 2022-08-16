@@ -3,6 +3,9 @@ const db = require('./db/connection');
 const cTable = require('console.table');
 const inquirer = require('inquirer');
 const {getEmployees, addEmployee} = require ('./utils/employeeInfo');
+const {getDepartments,addDepartment} = require('./utils/departmentInfo');
+const {getRoles,addRole} = require('./utils/roleInfo');
+
 
 const start = () => {
     console.log(`
@@ -21,26 +24,29 @@ const start = () => {
     .then((answer) => {
         switch(answer.selectOption){
             case 'View All Departments':
-                // INSERT FUNCTION TO QUERY FOR ALL DEPARTMENTS;
+                getDepartments()
+                .then(() => {start()});
                 break;
             case 'View All Roles':
-                // INSERT FUNCTION TO QUERY FOR ALL ROLES;
+                getRoles()
+                .then(() => {start()});
                 break;
             case 'View All Employees':
                 getEmployees()
                 .then(() => {start()});
                 break;
             case 'Add a Department':
-                // INSERT FUNCTION TO INSERT A NEW RECORD INTO departments TABLE;
+                addDepartment()
+                .then(() => {start()})
                 break;
             case 'Add a Role':
-                // INSERT FUNCTION TO INSERT A NEW RECORD INTO roles TABLE;
+                addRole()
+                .then(() => {start()})
                 break;
             case 'Add an Employee':
                 addEmployee()
                 .then(() => {start()}) 
                     
-                
                 break;
             case 'Update an Employee Role':
                 // INSERT FUNCTION TO UPDATE employees TABLE WITH A NEW ROLE VALUE;

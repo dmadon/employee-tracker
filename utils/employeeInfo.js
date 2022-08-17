@@ -119,17 +119,44 @@ const addEmployee = () => {
                 }   
             
             ])
-            .then((answers) => {
-                db.query("INSERT INTO employees SET ?",
-                    {
-                    emp_first_name: answers.firstName,
-                    emp_last_name: answers.lastName,
-                    emp_role_id: answers.empRoleId,
-                    emp_manager_id: answers.empManagerId
-                    }) 
+            .then((answer) => {
+                db.query("SELECT roles.role_id FROM roles WHERE roles.role_title = ?",
+                answer.empRole,
+                (err,response) => {
+                    if(err){
+                        console.log(err);
+                        return;
+                }
+                answer.empRoleId = response[0].role_id;
+
+                console.log(answer);
+                })
+                
+
+                // db.query("SELECT employees.emp_id FROM employees WHERE CONCAT(emp_last_name,', ',emp_first_name)=?",
+                // answer.empManager,
+                // (err,response) => {
+                //     if(err){
+                //     console.log(err);
+                //     return;
+                // }
+                // answer.empManagerId = response[0].emp_id;
+                // })
+
+                
+
+
+                // db.query("INSERT INTO employees SET ?",
+                //     {
+                //     emp_first_name: answer.firstName,
+                //     emp_last_name: answer.lastName,
+                //     emp_role_id: answer.empRoleId,
+                //     emp_manager_id: answer.empManagerId
+                //     })
                     
-                    console.log('Employee added!');
-                    // getEmployees(); 
+                    
+                //     resolve(console.log('Employee added!'));
+                //     // getEmployees(); 
                     
                     
                 }) 

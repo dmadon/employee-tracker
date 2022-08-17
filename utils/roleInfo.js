@@ -89,7 +89,7 @@ const addRole = () => {
                 },            
                 ])// end of .prompt
                 .then((answer) => {
-                    db.query(`SELECT departments.dept_id FROM departments WHERE departments.dept_name = ?`,
+                    db.query("SELECT departments.dept_id FROM departments WHERE departments.dept_name = ?",
                         answer.chooseDepartment,
                         (err,response) => {
                             if(err){

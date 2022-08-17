@@ -30,7 +30,6 @@ const getRoles = () => {
     });
 
 })
-  
 }
 
 
@@ -74,10 +73,7 @@ const addRole = () => {
                             console.log('Salary must be a number.');
                             return false;
                         }
-                        // return valid || console.log('Please enter a number')
                     }
-                  
-                    
                 },
                 { 
                     type: 'list',
@@ -92,21 +88,27 @@ const addRole = () => {
                     }
                 },            
                 ])// end of .prompt
-                .then((answer) => {db.query(`SELECT departments.dept_id FROM departments WHERE departments.dept_name = ?`,answer.chooseDepartment,(err,response) => {
-                    console.log(`That department id is: ${response[0].dept_id}`);
-                    return response[0].dept_id;
-                     
-                 })
-                })
-                    
-                })
-                // .then((finalAnswer) => {
-                //     resolve(
-                //     console.log('Role added!')
-                //     )
-                // })// end of .then
-        // });// end of db.query
-    });// end of new Promise
+                .then((answer) => {
+                    db.query(`SELECT departments.dept_id FROM departments WHERE departments.dept_name = ?`,
+                        answer.chooseDepartment,
+                        (err,response) => {
+                            if(err){
+                                console.log(err);
+                                return;
+                            }
+                            answer.roleDeptId =  response[0].dept_id;
+                            db.query("INSERT INTO roles SET ?",
+                            {
+                                role_title: answer.roleTitle,
+                                role_salary: answer.roleSalary,
+                                role_dept_id: answer.roleDeptId
+                            })
+
+                            resolve(console.log('Role added!'));
+                        });                   
+                })// end of then statement   
+        })// end of promise query
+    })// end of new Promise    
 };// end of addRole function
 
 module.exports = {getRoles, addRole};

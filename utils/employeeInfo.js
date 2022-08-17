@@ -120,6 +120,7 @@ const addEmployee = () => {
             
             ])
             .then((answer) => {
+
                 db.query("SELECT roles.role_id FROM roles WHERE roles.role_title = ?",
                 answer.empRole,
                 (err,response) => {
@@ -128,38 +129,41 @@ const addEmployee = () => {
                         return;
                 }
                 answer.empRoleId = response[0].role_id;
-
-                console.log(answer);
                 })
                 
 
-                // db.query("SELECT employees.emp_id FROM employees WHERE CONCAT(emp_last_name,', ',emp_first_name)=?",
-                // answer.empManager,
-                // (err,response) => {
-                //     if(err){
-                //     console.log(err);
-                //     return;
-                // }
-                // answer.empManagerId = response[0].emp_id;
-                // })
-
-                
-
-
-                // db.query("INSERT INTO employees SET ?",
-                //     {
-                //     emp_first_name: answer.firstName,
-                //     emp_last_name: answer.lastName,
-                //     emp_role_id: answer.empRoleId,
-                //     emp_manager_id: answer.empManagerId
-                //     })
-                    
-                    
-                //     resolve(console.log('Employee added!'));
-                //     // getEmployees(); 
-                    
-                    
+                db.query("SELECT employees.emp_id FROM employees WHERE CONCAT(employees.emp_last_name,', ',employees.emp_first_name)=?",
+                answer.empManager,
+                (err,response) => {
+                    if(err){
+                    console.log(err);
+                    return;
+                }
+                if(answer.empManager == "none"){
+                    answer.empManagerId = null;
+                }
+                else{
+                    answer.empManagerId = response[0].emp_id;
+                }
+                    console.table(answer);
+                    db.query("INSERT INTO employees SET ?", 
+                        {
+                        emp_first_name: answer.firstName,
+                        emp_last_name: answer.lastName,
+                        emp_role_id: answer.empRoleId,
+                        emp_manager_id: answer.empManagerId
+                        },
+                        (err,response) => {
+                            if(err){
+                                console.log('UNABLE TO ADD EMPLOYEE.')
+                                return;
+                            }
+                            resolve(console.log('Employee added!'));
+                        }
+                        )
+                        
                 }) 
+            }) // end of then statement
     })// end of new Promise     
 };
 

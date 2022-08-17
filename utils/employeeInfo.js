@@ -49,74 +49,91 @@ const getEmployees = () => {
 
 
 const addEmployee = () => {
-    return inquirer
-        .prompt([
-           { 
-            type: 'input',
-            name: 'firstName',
-            message: "What is your employee's first name?",
-            validate: firstNameInput => {
-                if(firstNameInput){
-                    return true;
-                }
-                else{
-                    console.log('First name is required.');
-                    return false;
-                }
+
+    return new Promise((resolve,reject) => {
+
+        let roleChoices = [];
+        let managerChoices = ['none'];
+
+        db.query("SELECT * FROM roles", (err,rows) => {
+            if(err){
+                reject(err);
+                return;
             }
-           },
-           {
-            type: 'input',
-            name: 'lastName',
-            message: "What is your employee's last name?",
-            validate: lastNameInput => {
-                if(lastNameInput){
-                    return true;
-                }
-                else{
-                    console.log('Last name is required.');
-                    return false;
-                }
+            for(i=0;i<rows.length;i++){
+                roleChoices.push(rows[i].role_title)
             }
-           },
-           {
-            // THIS WILL EVENTUALLY NEED TO BE POPULATED FROM POSSIBLE VALUES IN THE DATABASE
-            type: 'input',
-            name: 'empRoleId',
-            message: "What is your employee's role id?",
-            validate: empRoleIDInput => {
-                if(empRoleIDInput){
-                    return true;
-                }
-                else{
-                    console.log('Role ID is required.');
-                    return false;
-                }
+        })
+        db.query("SELECT CONCAT(emp_last_name,', ',emp_first_name) AS managers FROM employees ORDER BY emp_last_name ASC", (err,rows) => {
+            if(err){
+                reject(err);
+                return;
             }
-           },
-           {
-            // EVENTUALLY, THIS WILL NEED TO BE POPULATED BY A LIST OF POSSIBLE CHOICES FROM THE DATABASE
-            type: 'input',
-            name: 'empManagerId',
-            message: "What is your employee's manager's ID?"
-           }   
-           
-        ])
-        .then((answers) => {
-            db.query("INSERT INTO employees SET ?",
+            for(i=0;i<rows.length;i++){
+                managerChoices.push(rows[i].managers)
+            }
+            
+        })
+
+        return inquirer
+            .prompt([
+                { 
+                type: 'input',
+                name: 'firstName',
+                message: "What is your employee's first name?",
+                validate: firstNameInput => {
+                    if(firstNameInput){
+                        return true;
+                    }
+                    else{
+                        console.log('First name is required.');
+                        return false;
+                    }
+                    }
+                },
                 {
-                emp_first_name: answers.firstName,
-                emp_last_name: answers.lastName,
-                emp_role_id: answers.empRoleId,
-                emp_manager_id: answers.empManagerId
+                type: 'input',
+                name: 'lastName',
+                message: "What is your employee's last name?",
+                validate: lastNameInput => {
+                    if(lastNameInput){
+                        return true;
+                    }
+                    else{
+                        console.log('Last name is required.');
+                        return false;
+                    }
+                    }
+                },
+                {
+                type: 'list',
+                name: 'empRole',
+                message: "What is your employee's role?",
+                choices: roleChoices
+                },
+                {
+                type: 'list',
+                name: 'empManager',
+                message: "Who is this employee's manager?",
+                choices: managerChoices
+                }   
+            
+            ])
+            .then((answers) => {
+                db.query("INSERT INTO employees SET ?",
+                    {
+                    emp_first_name: answers.firstName,
+                    emp_last_name: answers.lastName,
+                    emp_role_id: answers.empRoleId,
+                    emp_manager_id: answers.empManagerId
+                    }) 
+                    
+                    console.log('Employee added!');
+                    // getEmployees(); 
+                    
+                    
                 }) 
-                
-                console.log('Employee added!');
-                // getEmployees(); 
-                
-                
-            }) 
-        
+    })// end of new Promise     
 };
 
 module.exports = {getEmployees, addEmployee};

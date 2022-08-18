@@ -111,4 +111,82 @@ const addRole = () => {
     })// end of new Promise    
 };// end of addRole function
 
-module.exports = {getRoles, addRole};
+
+
+
+const updateRole = () => {
+
+    return new Promise((resolve,reject) => {
+
+        db.query("SELECT employees.emp_id, CONCAT(employees.emp_last_name,', ',employees.emp_first_name) AS Employee, employees.emp_role_id FROM employees", (err,rows) => {
+
+            if(err){
+                reject(err);
+                return;
+            };
+
+            return inquirer
+                .prompt([
+                {
+                    type: 'list',
+                    name: 'empName',
+                    message: 'Select an employee to change role.',
+                    choices: function(){
+                        let choiceArr = [];
+                        for(i=0;i<rows.length;i++){
+                            choiceArr.push(rows[i].Employee);
+                        }
+                        console.log(choiceArr);
+                        return choiceArr;
+                    }
+                }
+                
+                ])// end of .prompt
+                .then((answer) => {
+                    console.table(answer);
+                    db.query("SELECT employees.emp_id FROM employees WHERE CONCAT(employees.emp_last_name,', ',employees.emp_first_name) = ?",
+                        answer.empName,
+                        (err,response) => {
+                            if(err){
+                                console.log(err);
+                                return;
+                            }
+                            answer.empId =  response[0].emp_id;
+                            console.log(answer);
+
+                    db.query("SELECT roles.role_title FROM roles",
+                        (err,rows) => {
+                            if(err){
+                                console.log(err);
+                                return;
+                            }
+                            return inquirer
+                                .prompt([
+                                    {
+                                        type: 'list',
+                                        name: 'roleSelect',
+                                        message: 'Select a new role for the employee',
+                                        choices: function(){
+                                            let roleArr = [];
+                                            for(i=0;i<rows.length;i++){
+                                                roleArr.push(rows[i].role_title)
+                                            }
+                                            return roleArr;
+                                        }
+                                    }
+                                ])// end inquirer prompt
+                                .then((answer) => {
+                                    console.log(answer);
+                                })
+                        }
+                    //        
+                    //         resolve(console.log('Role added!'));
+                    );                   
+                    })// end of then statement   
+        })// end of promise query
+    })// end of new Promise    
+})
+};// end of addRole function
+
+
+module.exports = {getRoles, addRole, updateRole};

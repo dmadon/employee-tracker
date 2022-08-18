@@ -4,7 +4,7 @@ const cTable = require('console.table');
 const inquirer = require('inquirer');
 const {getEmployees, addEmployee} = require ('./utils/employeeInfo');
 const {getDepartments,addDepartment} = require('./utils/departmentInfo');
-const {getRoles,addRole} = require('./utils/roleInfo');
+const {getRoles,addRole,updateRole} = require('./utils/roleInfo');
 
 
 const start = () => {
@@ -49,6 +49,7 @@ const start = () => {
                     
                 break;
             case 'Update an Employee Role':
+                updateRole()
                 // INSERT FUNCTION TO UPDATE employees TABLE WITH A NEW ROLE VALUE;
         }
 

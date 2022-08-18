@@ -1,23 +1,29 @@
 INSERT INTO departments(dept_name)
     VALUES
     ('Superintentent'),
-    ('Academic Services'),
-    ('Elementary Curriculum');
+    ('Acad Serv'),
+    ('Elem Acad Serv'),
+    ('Federal Programs');
 
 INSERT INTO roles(role_title,role_salary,role_dept_id)
     VALUES
-    ('Manager', 120000.00, 1),
-    ('Coordinator', 80000.00,1),
-    ('Specialist', 65000.00,1),
-    ('Support Staff', 55000.00,1),
-    ('Manager', 100000.00,2),
-    ('Coordinator', 70000.00,2),
-    ('Specialist', 60000.00,2),
-    ('Support Staff', 50000.00,2),
-    ('Manager', 90000.00,3),
-    ('Coordinator', 60000.00,3),
-    ('Specialist', 50000.00,3),
-    ('Support Staff', 40000.00,3);
+    ('Superintendent', 300000.00, 1),
+    ('Deputy Superintendent', 25000.00,1),
+    ('Assistant Superintendent', 220000.00,1),
+    ('Chief Learning Officer', 210000.00,2),
+    ('Director of Elem Acad Serv', 190000.00,3),
+    ('Elem Math Coord', 120000.00,3),
+    ('Elem Science Coord', 120000.00,2),
+    ('Elem Literacy Coord', 12000.00,2),
+    ('Elem Social Studies Coord', 120000.00,3),
+    ('Elem Inst Specialist, Math', 80000.00,3),
+    ('Elem Inst Specialist, Science', 80000.00,3),
+    ('Elem Inst Specialist, Literacy', 80000.00,3),
+    ('Directory of Federal Programs', 150000.00,4),
+    ('Title I Specialist', 80000,4),
+    ('Federal Grants Secretary', 48000.00,4),
+    ('Title I Secretary',48000.00,4),
+    ('Office Manager Elem Acad Serv',50000.00,3);
 
 INSERT INTO employees(emp_first_name,emp_last_name,emp_role_id,emp_manager_id)
     VALUES

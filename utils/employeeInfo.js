@@ -55,7 +55,8 @@ const addEmployee = () => {
         let roleChoices = [];
         let managerChoices = ['none'];
 
-        db.query("SELECT * FROM roles", (err,rows) => {
+        db.query("SELECT * FROM roles",
+        (err,rows) => {
             if(err){
                 reject(err);
                 return;
@@ -136,15 +137,15 @@ const addEmployee = () => {
                 answer.empManager,
                 (err,response) => {
                     if(err){
-                    console.log(err);
-                    return;
-                }
-                if(answer.empManager == "none"){
-                    answer.empManagerId = null;
-                }
-                else{
-                    answer.empManagerId = response[0].emp_id;
-                }
+                        console.log(err);
+                        return;
+                    }
+                    else if(answer.empManager == "none"){
+                        answer.empManagerId = null;
+                    }
+                    else{
+                        answer.empManagerId = response[0].emp_id;
+                    }
                     console.table(answer);
                     db.query("INSERT INTO employees SET ?", 
                         {

@@ -118,72 +118,79 @@ const updateRole = () => {
 
     return new Promise((resolve,reject) => {
 
-        db.query("SELECT employees.emp_id, CONCAT(employees.emp_last_name,', ',employees.emp_first_name) AS Employee, employees.emp_role_id FROM employees", (err,rows) => {
+        let employeeArr = [];
+        let roleArr = [];
 
+        db.query("SELECT employees.emp_id, CONCAT(employees.emp_last_name,', ',employees.emp_first_name) AS Employee, employees.emp_role_id FROM employees",
+        (err,rows) => {
             if(err){
                 reject(err);
                 return;
+            }
+            for(i=0;i<rows.length;i++){
+                employeeArr.push(rows[i].Employee);
             };
+        });
 
-            return inquirer
-                .prompt([
+        db.query("SELECT roles.role_title FROM roles",
+        (err,rows) => {
+            if(err){
+                reject(err);
+                return;
+            }
+            for(i=0;i<rows.length;i++){
+                roleArr.push(rows[i].role_title)
+            }
+            
+        return inquirer
+            .prompt([
                 {
-                    type: 'list',
-                    name: 'empName',
-                    message: 'Select an employee to change role.',
-                    choices: function(){
-                        let choiceArr = [];
-                        for(i=0;i<rows.length;i++){
-                            choiceArr.push(rows[i].Employee);
-                        }
-                        console.log(choiceArr);
-                        return choiceArr;
-                    }
-                }
+                type: 'list',
+                name: 'empName',
+                message: 'Select an employee to change role.',
+                choices: employeeArr
+                },
+                {
+                type: 'list',
+                name: 'newRole',
+                message: 'Select a new role for the employee',
+                choices: roleArr
+                }           
+            ])       
+            .then((answer) => {
                 
-                ])// end of .prompt
-                .then((answer) => {
-                    console.table(answer);
-                    db.query("SELECT employees.emp_id FROM employees WHERE CONCAT(employees.emp_last_name,', ',employees.emp_first_name) = ?",
-                        answer.empName,
+                db.query("SELECT employees.emp_id FROM employees WHERE CONCAT(employees.emp_last_name,', ',employees.emp_first_name) = ?",
+                    answer.empName,
+                    (err,response) => {
+                        if(err){
+                            console.log(err);
+                            return;
+                        }
+                        answer.empId = response[0].emp_id;
+                        
+                    })
+
+                db.query("SELECT roles.role_id FROM roles WHERE roles.role_title = ?",
+                    answer.newRole,
+                    (err,response) => {
+                        if(err){
+                            console.log(err);
+                            return;
+                        }
+                        answer.newRoleId = response[0].role_id;
+                        
+
+                        db.query(`UPDATE employees SET employees.emp_role_id = ${answer.newRoleId} WHERE employees.emp_id = ${answer.empId}`),
                         (err,response) => {
                             if(err){
                                 console.log(err);
                                 return;
                             }
-                            answer.empId =  response[0].emp_id;
-                            console.log(answer);
-
-                    db.query("SELECT roles.role_title FROM roles",
-                        (err,rows) => {
-                            if(err){
-                                console.log(err);
-                                return;
-                            }
-                            return inquirer
-                                .prompt([
-                                    {
-                                        type: 'list',
-                                        name: 'roleSelect',
-                                        message: 'Select a new role for the employee',
-                                        choices: function(){
-                                            let roleArr = [];
-                                            for(i=0;i<rows.length;i++){
-                                                roleArr.push(rows[i].role_title)
-                                            }
-                                            return roleArr;
-                                        }
-                                    }
-                                ])// end inquirer prompt
-                                .then((answer) => {
-                                    console.log(answer);
-                                })
+                            
                         }
-                    //        
-                    //         resolve(console.log('Role added!'));
-                    );                   
-                    })// end of then statement   
-        })// end of promise query
+                        resolve(console.log('Role updated!'));
+                })   
+            })// end of then statement
     })// end of new Promise    
 })
 };// end of addRole function

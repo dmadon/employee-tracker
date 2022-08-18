@@ -46,11 +46,12 @@ const start = () => {
             case 'Add an Employee':
                 addEmployee()
                 .then(() => {start()}) 
-                    
                 break;
             case 'Update an Employee Role':
                 updateRole()
-                // INSERT FUNCTION TO UPDATE employees TABLE WITH A NEW ROLE VALUE;
+                .then(() => {start()}) 
+                break;
+                
         }
 
     })

@@ -29,4 +29,8 @@ INSERT INTO employees(emp_first_name,emp_last_name,emp_role_id,emp_manager_id)
     VALUES
     ('Theresa','Williams',1,NULL),
     ('Lisa','Wilson',2,1),
-    ('Liz','Tycom',3,1);
+    ('Laurie','Taylor',4,2),
+    ('Ashley','Davis',5,3),
+    ('Nardeen','Boxell',13,3),
+    ('Deanna','Madon',17,4),
+    ('Ginger','Teaff',6,4);

@@ -413,5 +413,87 @@ const getEmployeesByManager = () => {
 
 
 
+const getEmployeesByDepartment = () => {
 
-module.exports = {getEmployees, addEmployee, updateRole, updateManager, getEmployeesByManager};
+    return new Promise((resolve,reject) => {
+
+        db.query("SELECT departments.dept_name FROM departments",
+            (err,rows) => {
+                if(err){
+                    reject(err);
+                    return;
+                };
+
+                return inquirer
+                .prompt([
+                    {
+                        type: 'list',
+                        name: 'department',
+                        message: 'Select a department to view employees.',
+                        choices: function(){
+                            let choiceArr = [];
+                            for (i=1; i<rows.length;i++){
+                                choiceArr.push(rows[i].dept_name);
+                            }
+                            return choiceArr;
+                        }
+                    }
+                ])
+                .then((answer) => {
+                    db.query("SELECT departments.dept_id FROM departments WHERE departments.dept_name = ?",
+                    answer.department,
+                        (err, response) => {
+                            if(err){
+                                reject(err);
+                                return;
+                            }
+                            answer.deptId = response[0].dept_id;
+
+                            db.query(`SELECT 
+                            E.emp_id AS 'ID',
+                            E.emp_last_name AS 'Last Name',
+                            E.emp_first_name AS 'First Name',   
+                            roles.role_title AS 'Title',
+                            departments.dept_name AS 'Department',
+                            roles.role_salary AS 'Salary',
+                            CONCAT(M.emp_first_name," ",M.emp_last_name) AS Manager
+                        
+                            FROM employees E
+                            
+                            JOIN roles
+                            ON roles.role_id = E.emp_role_id
+                            
+                            JOIN departments
+                            ON departments.dept_id = roles.role_dept_id
+                        
+                            LEFT JOIN employees M
+                            ON M.emp_id = E.emp_manager_id
+
+                            WHERE departments.dept_id = ${answer.deptId}
+                        
+                            ORDER BY E.emp_last_name ASC`,
+
+                                (err,res) => {
+                                    if(err){
+                                        reject(err);
+                                        return;
+                                    }
+                                    resolve(
+                                    console.table(`
+-----------------------------------------------------------------------------------------
+                    EMPLOYEES FOR DEPARTMENT: ${answer.department}
+-----------------------------------------------------------------------------------------`),
+                                    console.table(res))
+                                })
+                        })
+                    })
+            }
+        )
+    })
+  
+}
+
+
+
+
+module.exports = {getEmployees, addEmployee, updateRole, updateManager, getEmployeesByManager, getEmployeesByDepartment};

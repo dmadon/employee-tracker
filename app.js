@@ -2,7 +2,7 @@ const PORT = process.env.PORT||3001;
 const db = require('./db/connection');
 const cTable = require('console.table');
 const inquirer = require('inquirer');
-const {getEmployees, addEmployee, updateRole, updateManager, getEmployeesByManager} = require ('./utils/employeeInfo');
+const {getEmployees, addEmployee, updateRole, updateManager, getEmployeesByManager, getEmployeesByDepartment} = require ('./utils/employeeInfo');
 const {getDepartments,addDepartment} = require('./utils/departmentInfo');
 const {getRoles,addRole} = require('./utils/roleInfo');
 
@@ -18,7 +18,7 @@ const start = () => {
             type: 'list',
             name: 'selectOption',
             message: 'Please select an option from the list',
-            choices: ['View All Departments','View All Roles','View All Employees','View Employees by Manager','Add a Department','Add a Role',
+            choices: ['View All Departments','View All Roles','View All Employees','View Employees by Manager','View Employees by Department','Add a Department','Add a Role',
                 'Add an Employee','Update an Employee Role','Update an Employee Manager'],
         }    
     ])
@@ -38,6 +38,10 @@ const start = () => {
                 break;
             case 'View Employees by Manager':
                 getEmployeesByManager()
+                .then(() => {start()});
+                break;
+            case 'View Employees by Department':
+                getEmployeesByDepartment()
                 .then(() => {start()});
                 break;
 

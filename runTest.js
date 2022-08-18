@@ -2,99 +2,96 @@
 const db = require('./db/connection');
 const cTable = require('console.table');
 const inquirer = require('inquirer');
-const {getEmployees, addEmployee} = require ('./utils/employeeInfo');
 
 
 
-const addRole = () => {
+const updateManager = () => {
 
     return new Promise((resolve,reject) => {
 
-        db.query("SELECT * FROM departments", (err,results) => {
+        let employeeArr = [];
+        let roleArr = [];
 
+        db.query("SELECT employees.emp_id, CONCAT(employees.emp_last_name,', ',employees.emp_first_name) AS Employee, employees.emp_role_id FROM employees",
+        (err,rows) => {
             if(err){
                 reject(err);
                 return;
+            }
+            for(i=0;i<rows.length;i++){
+                employeeArr.push(rows[i].Employee);
             };
+        });
 
-            return inquirer
-                .prompt([
-                { 
-                    type: 'list',
-                    name: 'chooseDepartment',
-                    message: "Choose an department",
-                    choices: function(){
-                        let choiceArr = [];
-                        for(i=0; i<results.length;i++){
-                            choiceArr.push(results[i].dept_name);
+        db.query("SELECT roles.role_title FROM roles",
+        (err,rows) => {
+            if(err){
+                reject(err);
+                return;
+            }
+            for(i=0;i<rows.length;i++){
+                roleArr.push(rows[i].role_title)
+            }
+            
+        return inquirer
+            .prompt([
+                {
+                type: 'list',
+                name: 'empName',
+                message: 'Select an employee to change manager.',
+                choices: employeeArr
+                },
+                {
+                type: 'list',
+                name: 'newManager',
+                message: 'Select a new manager for the employee',
+                choices: employeeArr
+                }           
+            ])       
+            .then((answer) => {
+                
+                db.query("SELECT employees.emp_id FROM employees WHERE CONCAT(employees.emp_last_name,', ',employees.emp_first_name) = ?",
+                    answer.empName,
+                    (err,response) => {
+                        if(err){
+                            console.log(err);
+                            return;
                         }
-                        return choiceArr;
-                    }
-                },            
-                ])// end of .prompt
-                .then((answer) => {
-                    resolve(
-                    console.log('Role added!')
-                    )
-                })// end of .then
-        });// end of db.query
-    });// end of new Promise
-};// end of addRole function
+                        answer.empId = response[0].emp_id;
+                        
+                    })
 
+                    db.query("SELECT employees.emp_id FROM employees WHERE CONCAT(employees.emp_last_name,', ',employees.emp_first_name) = ?",
+                    answer.newManager,
+                    (err,response) => {
+                        if(err){
+                            console.log(err);
+                            return;
+                        }
+                        answer.newManagerId = response[0].emp_id;
+                        
 
-addRole()
+                        db.query(`UPDATE employees SET employees.emp_manager_id = ${answer.newManagerId} WHERE employees.emp_id = ${answer.empId}`),
+                        (err,response) => {
+                            if(err){
+                                console.log(err);
+                                return;
+                            }
+                            
+                        }
+                        resolve(console.log('Manager updated!'));
+                })   
+            })// end of then statement
+    })// end of new Promise    
+})
+};// end of updateManager function
+updateManager()
 
 .then(() => {
     console.log('did it work?')
 })
 
 
-
-
-// const testPromise = () => {
-//     return new Promise((resolve,reject) => {
-//         const sql = 
-//         `SELECT 
-//         E.emp_id AS 'ID',
-//         E.emp_last_name AS 'Last Name',
-//         E.emp_first_name AS 'First Name',   
-//         roles.role_title AS 'Title',
-//         departments.dept_name AS 'Department',
-//         roles.role_salary AS 'Salary',
-//         CONCAT(M.emp_first_name," ",M.emp_last_name) AS Manager
-    
-//         FROM employees E
-        
-//         JOIN roles
-//         ON roles.role_id = E.emp_role_id
-        
-//         JOIN departments
-//         ON departments.dept_id = roles.role_dept_id
-    
-//         LEFT JOIN employees M
-//         ON M.emp_id = E.emp_manager_id
-    
-//         ORDER BY E.emp_last_name ASC
-        
-//         `;
-        
-    
-//         db.query(sql,(err,rows) => {
-//             if(err){
-//                 reject(err);
-//                 return;
-//             }
-//             resolve(
-//                 console.table(rows)
-//             );
-//         });
-
-//     })
-    
-// }
-
-
-// testPromise()
 
 
 

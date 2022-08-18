@@ -2,9 +2,9 @@ const PORT = process.env.PORT||3001;
 const db = require('./db/connection');
 const cTable = require('console.table');
 const inquirer = require('inquirer');
-const {getEmployees, addEmployee} = require ('./utils/employeeInfo');
+const {getEmployees, addEmployee, updateRole, updateManager} = require ('./utils/employeeInfo');
 const {getDepartments,addDepartment} = require('./utils/departmentInfo');
-const {getRoles,addRole,updateRole} = require('./utils/roleInfo');
+const {getRoles,addRole} = require('./utils/roleInfo');
 
 
 const start = () => {
@@ -18,7 +18,8 @@ const start = () => {
             type: 'list',
             name: 'selectOption',
             message: 'Please select an option from the list',
-            choices: ['View All Departments','View All Roles','View All Employees','Add a Department','Add a Role','Add an Employee','Update an Employee Role'],
+            choices: ['View All Departments','View All Roles','View All Employees','Add a Department','Add a Role',
+                'Add an Employee','Update an Employee Role','Update an Employee Manager'],
         }    
     ])
     .then((answer) => {
@@ -49,6 +50,10 @@ const start = () => {
                 break;
             case 'Update an Employee Role':
                 updateRole()
+                .then(() => {start()}) 
+                break;
+            case 'Update an Employee Manager':
+                updateManager()
                 .then(() => {start()}) 
                 break;
                 

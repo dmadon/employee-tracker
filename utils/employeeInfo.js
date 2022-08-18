@@ -9,7 +9,7 @@ const getEmployees = () => {
 
     console.table(`
 -----------------------------------------------------------------------------------------
-                                       ALL EMPLOYEES
+                                      ALL EMPLOYEES
 -----------------------------------------------------------------------------------------`);
     const sql = `SELECT 
     E.emp_id AS 'ID',
@@ -55,7 +55,7 @@ const addEmployee = () => {
         let roleChoices = [];
         let managerChoices = ['none'];
 
-        db.query("SELECT * FROM roles",
+        db.query("SELECT * FROM roles ORDER BY roles.role_title ASC",
         (err,rows) => {
             if(err){
                 reject(err);
@@ -146,7 +146,7 @@ const addEmployee = () => {
                     else{
                         answer.empManagerId = response[0].emp_id;
                     }
-                    console.table(answer);
+
                     db.query("INSERT INTO employees SET ?", 
                         {
                         emp_first_name: answer.firstName,
@@ -493,7 +493,60 @@ const getEmployeesByDepartment = () => {
   
 }
 
+const deleteEmployee = () => {
+
+    return new Promise((resolve,reject) => {
+
+        db.query("SELECT CONCAT(employees.emp_last_name,', ',employees.emp_first_name) AS Employees FROM employees",
+            (err,rows) => {
+                if(err){
+                    reject(err);
+                    return;
+                };
+
+                return inquirer
+                .prompt([
+                    {
+                        type: 'list',
+                        name: 'employee',
+                        message: 'Select an employee to delete.',
+                        choices: function(){
+                            let choiceArr = [];
+                            for (i=1; i<rows.length;i++){
+                                choiceArr.push(rows[i].Employees);
+                            }
+                            return choiceArr;
+                        }
+                    }
+                ])
+                .then((answer) => {
+                    db.query("SELECT employees.emp_id FROM employees WHERE CONCAT(employees.emp_last_name,', ',employees.emp_first_name) = ?",
+                    answer.employee,
+                        (err, response) => {
+                            if(err){
+                                reject(err);
+                                return;
+                            }
+                            answer.empId = response[0].emp_id;
+
+                            db.query(`DELETE FROM employees WHERE employees.emp_id = ${answer.empId}`,
+                                (err,res) => {
+                                    if(err){
+                                        reject(err);
+                                        return;
+                                    }
+                                    resolve(
+                                    console.log('Employee deleted!'))
+                                })
+                        })
+                    })
+            }
+        )
+    })
+  
+}
 
 
 
-module.exports = {getEmployees, addEmployee, updateRole, updateManager, getEmployeesByManager, getEmployeesByDepartment};
+
+module.exports = {getEmployees, addEmployee, updateRole, updateManager, getEmployeesByManager, getEmployeesByDepartment, deleteEmployee};

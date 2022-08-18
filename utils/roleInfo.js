@@ -113,8 +113,49 @@ const addRole = () => {
 
 
 
+const deleteRole = () => {
+
+    return new Promise((resolve,reject) => {
+
+    db.query("SELECT roles.role_title FROM roles",
+        (err, rows)=> {
+
+            if(err){
+                reject(err);
+                return;
+            }
+
+            return inquirer
+            .prompt([
+               { 
+                type: 'list',
+                name: 'roleTitle',
+                message: "Select a role to delete.",
+                choices: function(){
+                    let choiceArr = [];
+                    for (i=0; i<rows.length;i++){
+                        choiceArr.push(rows[i].role_title)
+                    }
+                    return choiceArr;
+                    }   
+               }
+            ])
+            .then((answers) => {
+                db.query("DELETE FROM roles WHERE roles.role_title = ?",
+                    answers.roleTitle, (err, response) => {
+                        if(err){
+                            reject(err);
+                            return;
+                        }
+                        resolve(console.log("Role deleted!"))
+                    });
+            }) ;
+        });
+
+    });
+        
+};
 
 
 
-
-module.exports = {getRoles, addRole};
+module.exports = {getRoles, addRole, deleteRole};

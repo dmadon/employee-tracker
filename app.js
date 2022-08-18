@@ -2,24 +2,25 @@ const PORT = process.env.PORT||3001;
 const db = require('./db/connection');
 const cTable = require('console.table');
 const inquirer = require('inquirer');
-const {getEmployees, addEmployee, updateRole, updateManager, getEmployeesByManager, getEmployeesByDepartment} = require ('./utils/employeeInfo');
-const {getDepartments,addDepartment} = require('./utils/departmentInfo');
-const {getRoles,addRole} = require('./utils/roleInfo');
+const {getEmployees, addEmployee, updateRole, updateManager, getEmployeesByManager, getEmployeesByDepartment, deleteEmployee} = require ('./utils/employeeInfo');
+const {getDepartments,addDepartment, deleteDepartment, viewDepartmentBudget} = require('./utils/departmentInfo');
+const {getRoles,addRole, deleteRole} = require('./utils/roleInfo');
 
 
 const start = () => {
     console.log(`
-    ---------------------------------
-             EMPLOYEE TRACKER
-    ---------------------------------`);
+-----------------------------------------------------------------------------------------
+                              WELCOME TO EMPLOYEE TRACKER
+-----------------------------------------------------------------------------------------`);
 
     return inquirer.prompt([
         {
             type: 'list',
             name: 'selectOption',
             message: 'Please select an option from the list',
-            choices: ['View All Departments','View All Roles','View All Employees','View Employees by Manager','View Employees by Department','Add a Department','Add a Role',
-                'Add an Employee','Update an Employee Role','Update an Employee Manager'],
+            choices: ['View All Departments','View All Roles','View All Employees','View Employees by Manager','View Employees by Department',
+            'Add an Employee','Delete an Employee','View Department Salary Budgets','Add a Department','Delete a Department','Add a Role','Delete a Role',
+            'Update an Employee Role','Update an Employee Manager'],
         }    
     ])
     .then((answer) => {
@@ -44,21 +45,35 @@ const start = () => {
                 getEmployeesByDepartment()
                 .then(() => {start()});
                 break;
-
-
+            case 'Add an Employee':
+                addEmployee()
+                .then(() => {start()}) 
+                break;
+            case 'Delete an Employee':
+                deleteEmployee()
+                .then(() => {start()});
+                break;
+            case 'View Department Salary Budgets':
+                viewDepartmentBudget()
+                .then(() => {start()});
+                break;
 
 
             case 'Add a Department':
                 addDepartment()
                 .then(() => {start()})
                 break;
+            case 'Delete a Department':
+                deleteDepartment()
+                .then(() => {start()})
+                break;
             case 'Add a Role':
                 addRole()
                 .then(() => {start()})
                 break;
-            case 'Add an Employee':
-                addEmployee()
-                .then(() => {start()}) 
+            case 'Delete a Role':
+                deleteRole()
+                .then(() => {start()})
                 break;
             case 'Update an Employee Role':
                 updateRole()

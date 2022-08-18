@@ -19,7 +19,7 @@ INSERT INTO roles(role_title,role_salary,role_dept_id)
     ('Elem Inst Specialist, Math', 80000.00,3),
     ('Elem Inst Specialist, Science', 80000.00,3),
     ('Elem Inst Specialist, Literacy', 80000.00,3),
-    ('Directory of Federal Programs', 150000.00,4),
+    ('Director of Federal Programs', 150000.00,4),
     ('Title I Specialist', 80000,4),
     ('Federal Grants Secretary', 48000.00,4),
     ('Title I Secretary',48000.00,4),

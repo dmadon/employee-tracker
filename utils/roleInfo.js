@@ -108,8 +108,10 @@ const addRole = () => {
                                     console.log('UNABLE TO ADD ROLE.')
                                     return;
                                 }
+                                console.log(response);
                                 resolve(console.log('Role added!'));
                             });
+                            
                         });                   
                 })// end of then statement   
         })// end of promise query

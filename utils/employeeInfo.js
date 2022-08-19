@@ -175,7 +175,7 @@ const updateRole = () => {
         let employeeArr = [];
         let roleArr = [];
 
-        db.query("SELECT employees.emp_id, CONCAT(employees.emp_last_name,', ',employees.emp_first_name) AS Employee, employees.emp_role_id FROM employees",
+        db.query("SELECT employees.emp_id, CONCAT(employees.emp_last_name,', ',employees.emp_first_name) AS Employee FROM employees ORDER BY employees.emp_last_name ASC",
         (err,rows) => {
             if(err){
                 reject(err);
@@ -256,7 +256,7 @@ const updateManager = () => {
         let employeeArr = [];
         let roleArr = [];
 
-        db.query("SELECT employees.emp_id, CONCAT(employees.emp_last_name,', ',employees.emp_first_name) AS Employee, employees.emp_role_id FROM employees",
+        db.query("SELECT employees.emp_id, CONCAT(employees.emp_last_name,', ',employees.emp_first_name) AS Employee, employees.emp_role_id FROM employees ORDER BY employees.emp_last_name",
         (err,rows) => {
             if(err){
                 reject(err);
@@ -334,7 +334,7 @@ const getEmployeesByManager = () => {
 
     return new Promise((resolve,reject) => {
 
-        db.query("SELECT CONCAT(employees.emp_last_name,', ',employees.emp_first_name) AS Employees FROM employees",
+        db.query("SELECT CONCAT(employees.emp_last_name,', ',employees.emp_first_name) AS Employees FROM employees ORDER BY employees.emp_last_name",
             (err,rows) => {
                 if(err){
                     reject(err);
@@ -496,7 +496,7 @@ const deleteEmployee = () => {
 
     return new Promise((resolve,reject) => {
 
-        db.query("SELECT CONCAT(employees.emp_last_name,', ',employees.emp_first_name) AS Employees FROM employees",
+        db.query("SELECT CONCAT(employees.emp_last_name,', ',employees.emp_first_name) AS Employees FROM employees ORDER BY employees.emp_last_name",
             (err,rows) => {
                 if(err){
                     reject(err);
@@ -511,7 +511,7 @@ const deleteEmployee = () => {
                         message: 'Select an employee to delete.',
                         choices: function(){
                             let choiceArr = [];
-                            for (i=1; i<rows.length;i++){
+                            for (i=0; i<rows.length;i++){
                                 choiceArr.push(rows[i].Employees);
                             }
                             return choiceArr;

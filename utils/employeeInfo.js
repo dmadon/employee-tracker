@@ -160,12 +160,11 @@ const addEmployee = () => {
                                 return;
                             }
                             resolve(console.log('Employee added!'));
-                        }
-                        )
+                        });
                         
-                }) 
-            }) // end of then statement
-    })// end of new Promise     
+                });
+            });// end of then statement
+    });// end of new Promise     
 };
 
 

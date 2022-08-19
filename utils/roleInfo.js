@@ -102,9 +102,14 @@ const addRole = () => {
                                 role_title: answer.roleTitle,
                                 role_salary: answer.roleSalary,
                                 role_dept_id: answer.roleDeptId
-                            })
-
-                            resolve(console.log('Role added!'));
+                            },
+                            (err,response) => {
+                                if(err){
+                                    console.log('UNABLE TO ADD ROLE.')
+                                    return;
+                                }
+                                resolve(console.log('Role added!'));
+                            });
                         });                   
                 })// end of then statement   
         })// end of promise query

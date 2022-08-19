@@ -57,8 +57,6 @@ const start = () => {
                 viewDepartmentBudget()
                 .then(() => {start()});
                 break;
-
-
             case 'Add a Department':
                 addDepartment()
                 .then(() => {start()})
@@ -83,55 +81,8 @@ const start = () => {
                 updateManager()
                 .then(() => {start()}) 
                 break;
-                
-        }
-
-    })
-}
+        }// end of switch case
+    })// end of .then statement
+}// end of start function
 
 start();
-
-
-
-
-
-
-
-
-
-
-// const chooseEmployee = () => {
-
-//     db.query("SELECT * FROM employees ORDER BY emp_last_name ASC", (err,results) => {
-
-//         if(err)throw err;
-
-//         return inquirer
-//             .prompt([
-//             { 
-//                 type: 'rawlist',
-//                 name: 'chooseEmployee',
-//                 message: "Choose an employee",
-//                 choices: function(){
-//                     let choiceArr = [];
-//                     for(i=0; i<results.length;i++){
-//                         choiceArr.push(results[i].emp_id+" "+results[i].emp_last_name+", "+results[i].emp_first_name);
-//                     }
-//                     return choiceArr;
-//                 }
-//             },
-            
-//             ])
-//             .then((answers) => {
-//                 console.table(answers);
-//             })
-//     });
-// }
-
-
-// chooseEmployee();
-
-
-
-
-

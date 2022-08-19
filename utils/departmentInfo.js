@@ -13,18 +13,16 @@ const getDepartments = () => {
 -----------------------------------------------------------------------------------------`);
     const sql = `SELECT departments.dept_id AS id, departments.dept_name AS name FROM departments`;
 
-    db.query(sql,(err,rows) => {
-        if(err){
-            reject(err);
-            return;
-        }
-        resolve(
-            console.table(rows)
-        );
+        db.query(sql,(err,rows) => {
+            if(err){
+                reject(err);
+                return;
+            }
+            resolve(
+                console.table(rows)
+            );
+        });
     });
-
-})
-  
 }
 
 
@@ -51,13 +49,8 @@ const addDepartment = () => {
                 {
                     dept_name: answers.departmentName
                 }) 
-                
                 console.log('Department added!');
-                // getEmployees(); 
-                
-                
-            }) 
-        
+        }) 
 };
 
 const deleteDepartment = () => {
@@ -71,7 +64,6 @@ const deleteDepartment = () => {
                 reject(err);
                 return;
             }
-
             return inquirer
             .prompt([
                { 
@@ -98,9 +90,7 @@ const deleteDepartment = () => {
                     });
             }) ;
         });
-
     });
-        
 };
 
 const viewDepartmentBudget = () => {
@@ -111,7 +101,6 @@ const viewDepartmentBudget = () => {
                             TOTAL SALARY BUDGET BY DEPARTMENT
 -----------------------------------------------------------------------------------------`);
 
-
         db.query(`SELECT departments.dept_name AS 'Department' , sum(roles.role_salary) AS 'Total Salaries'
                 FROM departments
                 JOIN roles
@@ -119,16 +108,13 @@ const viewDepartmentBudget = () => {
                 GROUP BY departments.dept_name
                 ORDER BY departments.dept_name`,
             (err, rows)=> {
-
                 if(err){
                     reject(err);
                     return;
                 }
                 resolve(console.table(rows))
-
-            
         });
-    })
+    });
 };
 
 

@@ -28,8 +28,7 @@ const getRoles = () => {
             console.table(rows)
         );
     });
-
-})
+});
 }
 
 
@@ -43,7 +42,6 @@ const addRole = () => {
                 reject(err);
                 return;
             };
-
             return inquirer
                 .prompt([
                 {
@@ -108,10 +106,8 @@ const addRole = () => {
                                     console.log('UNABLE TO ADD ROLE.')
                                     return;
                                 }
-
                                 resolve(console.log('Role added!'));
                             });
-                            
                         });                   
                 })// end of then statement   
         })// end of promise query
@@ -126,12 +122,10 @@ const deleteRole = () => {
 
     db.query("SELECT roles.role_title FROM roles",
         (err, rows)=> {
-
             if(err){
                 reject(err);
                 return;
             }
-
             return inquirer
             .prompt([
                { 
@@ -155,12 +149,10 @@ const deleteRole = () => {
                             return;
                         }
                         resolve(console.log("Role deleted!"))
-                    });
-            }) ;
+                });
+            });
         });
-
-    });
-        
+    }); 
 };
 
 

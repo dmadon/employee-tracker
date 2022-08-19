@@ -42,9 +42,7 @@ const getEmployees = () => {
             console.table(rows)
         );
     });
-
-})
-  
+});  
 }
 
 
@@ -72,8 +70,7 @@ const addEmployee = () => {
             }
             for(i=0;i<rows.length;i++){
                 managerChoices.push(rows[i].managers)
-            }
-            
+            } 
         })
 
         return inquirer
@@ -118,10 +115,8 @@ const addEmployee = () => {
                 message: "Who is this employee's manager?",
                 choices: managerChoices
                 }   
-            
             ])
             .then((answer) => {
-
                 db.query("SELECT roles.role_id FROM roles WHERE roles.role_title = ?",
                 answer.empRole,
                 (err,response) => {
@@ -131,7 +126,6 @@ const addEmployee = () => {
                 }
                 answer.empRoleId = response[0].role_id;
                 })
-                
 
                 db.query("SELECT employees.emp_id FROM employees WHERE CONCAT(employees.emp_last_name,', ',employees.emp_first_name)=?",
                 answer.empManager,
@@ -161,7 +155,6 @@ const addEmployee = () => {
                             }
                             resolve(console.log('Employee added!'));
                         });
-                        
                 });
             });// end of then statement
     });// end of new Promise     
@@ -221,7 +214,6 @@ const updateRole = () => {
                             return;
                         }
                         answer.empId = response[0].emp_id;
-                        
                     })
 
                 db.query("SELECT roles.role_id FROM roles WHERE roles.role_title = ?",
@@ -232,15 +224,13 @@ const updateRole = () => {
                             return;
                         }
                         answer.newRoleId = response[0].role_id;
-                        
 
                         db.query(`UPDATE employees SET employees.emp_role_id = ${answer.newRoleId} WHERE employees.emp_id = ${answer.empId}`),
                         (err,response) => {
                             if(err){
                                 console.log(err);
                                 return;
-                            }
-                            
+                            }  
                         }
                         resolve(console.log('Role updated!'));
                 })   
@@ -302,7 +292,6 @@ const updateManager = () => {
                             return;
                         }
                         answer.empId = response[0].emp_id;
-                        
                     })
 
                     db.query("SELECT employees.emp_id FROM employees WHERE CONCAT(employees.emp_last_name,', ',employees.emp_first_name) = ?",
@@ -313,15 +302,13 @@ const updateManager = () => {
                             return;
                         }
                         answer.newManagerId = response[0].emp_id;
-                        
 
                         db.query(`UPDATE employees SET employees.emp_manager_id = ${answer.newManagerId} WHERE employees.emp_id = ${answer.empId}`),
                         (err,response) => {
                             if(err){
                                 console.log(err);
                                 return;
-                            }
-                            
+                            } 
                         }
                         resolve(console.log('Manager updated!'));
                 })   
@@ -359,56 +346,54 @@ const getEmployeesByManager = () => {
                 .then((answer) => {
                     db.query("SELECT employees.emp_id FROM employees WHERE CONCAT(employees.emp_last_name,', ',employees.emp_first_name) = ?",
                     answer.manager,
-                        (err, response) => {
-                            if(err){
-                                reject(err);
-                                return;
-                            }
-                            answer.id = response[0].emp_id;
+                    (err, response) => {
+                        if(err){
+                            reject(err);
+                            return;
+                        }
+                        answer.id = response[0].emp_id;
 
-                            db.query(`SELECT 
-                            E.emp_id AS 'ID',
-                            E.emp_last_name AS 'Last Name',
-                            E.emp_first_name AS 'First Name',   
-                            roles.role_title AS 'Title',
-                            departments.dept_name AS 'Department',
-                            roles.role_salary AS 'Salary',
-                            CONCAT(M.emp_first_name," ",M.emp_last_name) AS Manager
+                        db.query(`SELECT 
+                        E.emp_id AS 'ID',
+                        E.emp_last_name AS 'Last Name',
+                        E.emp_first_name AS 'First Name',   
+                        roles.role_title AS 'Title',
+                        departments.dept_name AS 'Department',
+                        roles.role_salary AS 'Salary',
+                        CONCAT(M.emp_first_name," ",M.emp_last_name) AS Manager
+                    
+                        FROM employees E
                         
-                            FROM employees E
-                            
-                            JOIN roles
-                            ON roles.role_id = E.emp_role_id
-                            
-                            JOIN departments
-                            ON departments.dept_id = roles.role_dept_id
+                        JOIN roles
+                        ON roles.role_id = E.emp_role_id
                         
-                            LEFT JOIN employees M
-                            ON M.emp_id = E.emp_manager_id
+                        JOIN departments
+                        ON departments.dept_id = roles.role_dept_id
+                    
+                        LEFT JOIN employees M
+                        ON M.emp_id = E.emp_manager_id
 
-                            WHERE E.emp_manager_id = ${answer.id}
-                        
-                            ORDER BY E.emp_last_name ASC`,
+                        WHERE E.emp_manager_id = ${answer.id}
+                    
+                        ORDER BY E.emp_last_name ASC`,
 
-                                (err,res) => {
-                                    if(err){
-                                        reject(err);
-                                        return;
-                                    }
-                                    resolve(
-                                    console.table(`
+                            (err,res) => {
+                                if(err){
+                                    reject(err);
+                                    return;
+                                }
+                                resolve(
+                                console.table(`
 -----------------------------------------------------------------------------------------
                     EMPLOYEES FOR MANAGER: ${answer.manager}
 -----------------------------------------------------------------------------------------`),
-                                    console.table(res))
-                                })
-                        })
-                    })
-            }
-        )
-    })
-  
-}
+                                console.table(res))
+                            });
+                    });
+                });
+        });
+    });
+};
 
 
 
@@ -483,14 +468,12 @@ const getEmployeesByDepartment = () => {
                     EMPLOYEES FOR DEPARTMENT: ${answer.department}
 -----------------------------------------------------------------------------------------`),
                                     console.table(res))
-                                })
-                        })
-                    })
-            }
-        )
-    })
-  
-}
+                                });
+                    });
+                });
+        });
+    });
+};
 
 const deleteEmployee = () => {
 
@@ -536,14 +519,12 @@ const deleteEmployee = () => {
                                     }
                                     resolve(
                                     console.log('Employee deleted!'))
-                                })
-                        })
-                    })
-            }
-        )
-    })
-  
-}
+                                });
+                    });
+                });
+        });
+    });
+};
 
 
 
